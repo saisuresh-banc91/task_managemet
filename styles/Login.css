@@ -1,0 +1,15 @@
+.loginBackground {
+  background-color: black;
+  min-height: 100vh;
+  flex: 2;
+}
+
+.loginInput {
+  /* background-color: aqua */
+  min-height: 100vh;
+  flex: 3;
+}
+
+/* .loginComponents {
+  margin-top: 20vh;
+} */
