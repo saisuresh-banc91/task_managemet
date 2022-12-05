@@ -7,7 +7,6 @@ import users from "../config/config";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import Link from "next/link";
-// const bcrypt = require("bcrypt");
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -19,6 +18,11 @@ export default function Home() {
   const [error, setError] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [invalid, setInvalid] = useState(false);
+
+  const onClick = useCallback(() => {
+    setUser("");
+    setIsUser(false);
+  }, []);
 
   const onChange = useCallback((event: any) => {
     setField(event.currentTarget.value);
@@ -90,6 +94,7 @@ export default function Home() {
                 error={error}
                 invalid={invalid}
                 notFound={notFound}
+                onClick={onClick}
               />
               {username && (
                 <Link href={"/overview"}>
