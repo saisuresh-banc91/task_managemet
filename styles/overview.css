@@ -1,0 +1,20 @@
+.header {
+  flex: 1;
+  border-bottom-style: groove;
+  border-bottom-width: 0.1rem;
+  border-color: white;
+  /* box-shadow: 2rem; */
+}
+
+.content {
+  flex: 15;
+}
+
+.businessContainer {
+  background-color: #f3f3f3;
+  flex: 1;
+}
+
+.overviewContainer {
+  flex: 4;
+}
