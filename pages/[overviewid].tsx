@@ -3,15 +3,17 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Head from "next/head";
 import React from "react";
 import { BsPerson } from "react-icons/bs";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { fetchUserById, selectUser } from "../features/user/userSlice";
+import { useRouter } from "next/router";
 
-<Head>
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-  />
-</Head>;
+const overview: React.FC = () => {
+  const router = useRouter();
+  const userid = router.query.overviewid;
 
-const overview = () => {
+  const dispatch = useAppDispatch();
+  const { user, loader, error } = useAppSelector(selectUser);
+  dispatch(fetchUserById(userid!.toString()));
   return (
     <>
       <div className="d-flex flex-column vh-100">
@@ -27,8 +29,8 @@ const overview = () => {
                 <BsPerson />
               </div>
               <div className="ms-3 d-flex flex-column">
-                <p>User Email</p>
-                <p>User Number</p>
+                <p>{user.email}</p>
+                <p>{user.phone}</p>
               </div>
             </div>
             <hr className="m-3" />
@@ -39,20 +41,24 @@ const overview = () => {
                 <div>ISSUER_P</div>
               </div>
               <div className="m-3">
-                <div className="fw-semibold">GST Number</div>
-                <div>1234556677</div>
+                <div className="fw-semibold">Username</div>
+                <div>{user.username}</div>
               </div>
               <div className="m-3">
-                <div className="fw-semibold">TAN Number</div>
-                <div>1234455677</div>
+                <div className="fw-semibold">Company</div>
+                <div>{user.company.name}</div>
               </div>
               <div className="m-3">
-                <div className="fw-semibold">PAN Number</div>
-                <div>1234556678</div>
+                <div className="fw-semibold">Website</div>
+                <div>{user.website}</div>
               </div>
               <div className="m-3">
                 <div className="fw-semibold">Registered Address</div>
-                <div>safi aw pfiawp fnap nfanwfj la asf naowj n</div>
+                <div>
+                  {Object.values(user.address).map((detail) => {
+                    return <div>{detail}</div>;
+                  })}
+                </div>
               </div>
             </div>
           </div>

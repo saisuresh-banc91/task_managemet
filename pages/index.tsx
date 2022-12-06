@@ -2,7 +2,7 @@ import { Footer, InputBox } from "@sachethpraveen/components";
 import Head from "next/head";
 import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import users from "../config/config";
 import validator from "validator";
 import bcrypt from "bcryptjs";
@@ -11,16 +11,17 @@ import Link from "next/link";
 const salt = bcrypt.genSaltSync(10);
 
 export default function Home() {
-  const [username, setUser] = useState("");
+  const [userId, setUser] = useState(0);
   const [password, setPass] = useState("");
   const [field, setField] = useState("");
   const [isUser, setIsUser] = useState(false);
   const [error, setError] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [invalid, setInvalid] = useState(false);
+  let id = useRef(0).current;
 
   const onClick = useCallback(() => {
-    setUser("");
+    setUser(0);
     setIsUser(false);
   }, []);
 
@@ -37,12 +38,12 @@ export default function Home() {
           validator.isMobilePhone(userEntered) ||
           userEntered.length >= 8
         ) {
-          if (
-            users.filter((user) => {
-              return user.email === userEntered || user.phone === userEntered;
-            }).length === 1
-          ) {
-            setUser(userEntered);
+          const userFiltered = users.filter((user) => {
+            return user.email === userEntered || user.phone === userEntered;
+          });
+          if (userFiltered.length === 1) {
+            setUser(userFiltered[0].id);
+            id = userFiltered[0].id;
             setIsUser(true);
             setError(false);
             setNotFound(false);
@@ -64,7 +65,10 @@ export default function Home() {
           setError(false);
           if (
             users.filter((user) => {
-              return bcrypt.compareSync(passwordEntered, user.password);
+              return (
+                bcrypt.compareSync(passwordEntered, user.password) &&
+                user.id === id
+              );
             }).length === 1
           ) {
             setPass(passwordEntered);
@@ -96,14 +100,15 @@ export default function Home() {
                 notFound={notFound}
                 onClick={onClick}
               />
-              {username && (
-                <Link href={"/overview"}>
+              {userId != 0 && (
+                <Link href={`/${userId}`}>
                   <button
                     className={
-                      username && password
+                      userId && password
                         ? "btn btn-dark"
                         : "btn btn-dark disabled"
                     }
+                    onClick={() => console.log(userId)}
                   >
                     Login
                   </button>
