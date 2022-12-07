@@ -15,7 +15,7 @@ export type UserState = {
     phone: number;
     company: { name: string; catchphrase: string; bs: string };
   };
-  loader: boolean;
+  status: string;
   error: boolean;
 };
 
@@ -30,7 +30,7 @@ const initialState: UserState = {
     phone: 0,
     company: { name: "", catchphrase: "", bs: "" },
   },
-  loader: false,
+  status: "idle",
   error: false,
 };
 
@@ -57,14 +57,14 @@ export const userSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchUserById.pending, (state) => {
-        state.loader = true;
+        state.status = "loading";
       })
       .addCase(fetchUserById.fulfilled, (state, action) => {
-        state.loader = false;
+        state.status = "succeeded";
         state.user = action.payload;
       })
       .addCase(fetchUserById.rejected, (state) => {
-        state.loader = false;
+        state.status = "failed";
         state.error = true;
       });
   },

@@ -1,19 +1,24 @@
 import { CardGroup, Header, Sidebar } from "@sachethpraveen/components";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Head from "next/head";
-import React from "react";
+import React, { useEffect } from "react";
 import { BsPerson } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { fetchUserById, selectUser } from "../features/user/userSlice";
 import { useRouter } from "next/router";
+import { nanoid } from "@reduxjs/toolkit";
 
 const overview: React.FC = () => {
   const router = useRouter();
   const userid = router.query.overviewid;
 
   const dispatch = useAppDispatch();
-  const { user, loader, error } = useAppSelector(selectUser);
-  dispatch(fetchUserById(userid!.toString()));
+  const { user, status, error } = useAppSelector(selectUser);
+
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchUserById(userid!.toString()));
+    }
+  });
   return (
     <>
       <div className="d-flex flex-column vh-100">
@@ -56,7 +61,7 @@ const overview: React.FC = () => {
                 <div className="fw-semibold">Registered Address</div>
                 <div>
                   {Object.values(user.address).map((detail) => {
-                    return <div>{detail}</div>;
+                    return <div key={`${nanoid()}`}>{detail}</div>;
                   })}
                 </div>
               </div>
