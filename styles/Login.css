@@ -1,4 +1,6 @@
 .loginBackground {
+  background-image: url("../config/Card.png");
+  background-size: cover;
   background-color: black;
   min-height: 100vh;
   flex: 2;
