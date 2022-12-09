@@ -1,16 +1,14 @@
 import { Header, Pagination, Sidebar, Table } from "@sachethpraveen/components";
 import React from "react";
-import Head from "next/head";
 import "bootstrap/dist/css/bootstrap.min.css";
-import bootstrap from "bootstrap";
 import { useGetBinsQuery } from "../features/api/binsSlice";
+import { nanoid } from "@reduxjs/toolkit";
 
-export default function () {
-  const { data, isError, isLoading, isSuccess } = useGetBinsQuery();
+const bins: React.FC = () => {
+  const { data, isError, isSuccess } = useGetBinsQuery();
 
   return (
     <>
-      {/* <Head></Head> */}
       <div className="">
         <div className="header ">
           <Header />
@@ -22,7 +20,7 @@ export default function () {
           <div className="me-4 ms-4 w-100">
             <div className="fw-semibold fs-3 mb-5">Bins</div>
             <Pagination length={data?.length} />
-            {data ? (
+            {isSuccess ? (
               <Table
                 data={data.map(
                   (product: { rating: { rate: number; count: number } }) => {
@@ -31,7 +29,12 @@ export default function () {
                     );
                   }
                 )}
+                generateKey={nanoid}
               />
+            ) : isError ? (
+              <div className="d-flex justify-content-center">
+                <div className="fs-2">An Error Occurred</div>
+              </div>
             ) : (
               <div className="d-flex justify-content-center">
                 <div className="spinner-border"></div>
@@ -42,4 +45,6 @@ export default function () {
       </div>
     </>
   );
-}
+};
+
+export default bins;

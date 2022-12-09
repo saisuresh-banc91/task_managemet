@@ -1,6 +1,4 @@
 import { Footer, InputBox } from "@sachethpraveen/components";
-import Head from "next/head";
-import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useCallback, useRef, useState } from "react";
 import users from "../config/config";

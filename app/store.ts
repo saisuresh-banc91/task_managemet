@@ -1,9 +1,4 @@
-import {
-  configureStore,
-  ThunkAction,
-  Action,
-  getDefaultMiddleware,
-} from "@reduxjs/toolkit";
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import userReducer from "../features/user/userSlice";
 import productsReducer from "../features/products/productsSlice";
 import { apiSlice } from "../features/api/apiSlice";

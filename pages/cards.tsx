@@ -8,8 +8,9 @@ import {
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useGetBinsQuery } from "../features/api/binsSlice";
+import { nanoid } from "@reduxjs/toolkit";
 
-export default function cards() {
+const cards = () => {
   const { data } = useGetBinsQuery();
 
   return (
@@ -34,6 +35,7 @@ export default function cards() {
                   );
                 }
               )}
+              generateKey={nanoid}
             />
           ) : (
             <div className="d-flex justify-content-center">
@@ -44,4 +46,6 @@ export default function cards() {
       </div>
     </div>
   );
-}
+};
+
+export default cards;

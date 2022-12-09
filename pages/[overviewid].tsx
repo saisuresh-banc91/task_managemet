@@ -14,9 +14,7 @@ const overview: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const { user, status, error } = useAppSelector(selectUser);
-  const { data, isError, isSuccess, isLoading } = useGetUserByIdQuery(
-    userid!.toString()
-  );
+  const { data, isError, isSuccess } = useGetUserByIdQuery(userid!.toString());
 
   useEffect(() => {
     if (status === "idle") {
@@ -32,49 +30,60 @@ const overview: React.FC = () => {
 
         <div className="d-flex content">
           <Sidebar />
-          {data && (
-            <div className="businessContainer">
-              <div className="d-flex m-3">
-                <div className="fs-1">
-                  <BsPerson />
+          {isSuccess ? (
+            <div className="d-flex w-100">
+              <div className="businessContainer">
+                <div className="d-flex m-3">
+                  <div className="fs-1">
+                    <BsPerson />
+                  </div>
+                  <div className="ms-3 d-flex flex-column">
+                    <p>{data.email}</p>
+                    <p>{data.phone}</p>
+                  </div>
                 </div>
-                <div className="ms-3 d-flex flex-column">
-                  <p>{data.email}</p>
-                  <p>{data.phone}</p>
+                <hr className="m-3" />
+                <div>
+                  <div className="fs-6 fw-semibold ms-3">Business Info</div>
+                  <div className="m-3">
+                    <div>CARD91</div>
+                    <div>ISSUER_P</div>
+                  </div>
+                  <div className="m-3">
+                    <div className="fw-semibold">Username</div>
+                    <div>{data.username}</div>
+                  </div>
+                  <div className="m-3">
+                    <div className="fw-semibold">Company</div>
+                    <div>{data.company.name}</div>
+                  </div>
+                  <div className="m-3">
+                    <div className="fw-semibold">Website</div>
+                    <div>{data.domain}</div>
+                  </div>
+                  <div className="m-3">
+                    <div className="fw-semibold">Registered Address</div>
+                    <div>{data.address.address}</div>
+                  </div>
                 </div>
               </div>
-              <hr className="m-3" />
-              <div>
-                <div className="fs-6 fw-semibold ms-3">Business Info</div>
-                <div className="m-3">
-                  <div>CARD91</div>
-                  <div>ISSUER_P</div>
-                </div>
-                <div className="m-3">
-                  <div className="fw-semibold">Username</div>
-                  <div>{data.username}</div>
-                </div>
-                <div className="m-3">
-                  <div className="fw-semibold">Company</div>
-                  <div>{data.company.name}</div>
-                </div>
-                <div className="m-3">
-                  <div className="fw-semibold">Website</div>
-                  <div>{data.domain}</div>
-                </div>
-                <div className="m-3">
-                  <div className="fw-semibold">Registered Address</div>
-                  <div>{data.address.address}</div>
+
+              <div className="overviewContainer">
+                <div className="fs-4 fw-semibold mt-3 ms-3">Overview</div>
+                <div>
+                  <CardGroup />
                 </div>
               </div>
+            </div>
+          ) : isError ? (
+            <div className="d-flex justify-content-center w-100">
+              <div className="fs-2">An Error Occurred</div>
+            </div>
+          ) : (
+            <div className="d-flex justify-content-center w-100">
+              <div className="spinner-border"></div>
             </div>
           )}
-          <div className="overviewContainer">
-            <div className="fs-4 fw-semibold mt-3 ms-3">Overview</div>
-            <div>
-              <CardGroup />
-            </div>
-          </div>
         </div>
       </div>
     </>
