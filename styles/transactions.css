@@ -1,0 +1,11 @@
+.header {
+  flex: 1;
+  border-bottom-style: groove;
+  border-bottom-width: 0.1rem;
+  border-color: white;
+}
+
+.spinner-border {
+  width: 3rem !important;
+  height: 3rem !important;
+}
