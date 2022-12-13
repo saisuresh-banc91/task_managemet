@@ -5,7 +5,21 @@ export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://dummyjson.com/' }),
     endpoints: (builder) => ({
-        getProducts: builder.query<{ products: Object[] }, void>({
+        getProducts: builder.query<
+            {
+                products: {
+                    brand: string
+                    description: string
+                    discountPercentage: number
+                    id: number
+                    price: number
+                    rating: number
+                    stock: number
+                    title: string
+                }[]
+            },
+            void
+        >({
             query: () => 'products',
         }),
 
