@@ -1,11 +1,15 @@
 .material-symbols-outlined {
-  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 48;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
 }
 
 .logo {
-  color: #7d57fd;
+    color: #7d57fd;
 }
 
 .fs-6 {
-  font-size: 0.8rem !important;
+    font-size: 0.8rem !important;
+}
+
+.transactions {
+    min-height: 100vh;
 }
