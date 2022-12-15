@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../../app/store'
+const initial: { products: Object[] } = { products: [] }
 
 export const productsSlice = createSlice({
     name: 'products',
-    initialState: { products: [] },
+    initialState: initial,
     reducers: {
         replace: (state, action) => {
             state.products = action.payload

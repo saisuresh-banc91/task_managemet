@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 const salt = bcrypt.genSaltSync(10)
 
-export default function Home() {
+const Home = () => {
     const [userId, setUser] = useState(0)
     const [password, setPass] = useState('')
     const [field, setField] = useState('')
@@ -126,3 +126,5 @@ export default function Home() {
         </>
     )
 }
+
+export default Home

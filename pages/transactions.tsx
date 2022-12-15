@@ -13,12 +13,12 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import {
     useGetProductsQuery,
     useAddProductMutation,
-} from '../features/api/apiSlice'
+} from '../features/api/apiProductsSlice'
 import { nanoid } from '@reduxjs/toolkit'
 import { replace, selectProducts } from '../features/products/productsSlice'
 import { useSelector } from 'react-redux'
 
-const transactions = () => {
+const Transactions = () => {
     const dispatch = useAppDispatch()
     // const [products, setProducts] = useState<
     //     | {
@@ -118,4 +118,4 @@ const transactions = () => {
 }
 // }
 
-export default transactions
+export default Transactions

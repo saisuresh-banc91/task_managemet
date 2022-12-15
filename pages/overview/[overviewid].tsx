@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { fetchUserById, selectUser } from '../../features/user/userSlice'
 import { useRouter } from 'next/router'
 import { nanoid } from '@reduxjs/toolkit'
-import { useGetUserByIdQuery } from '../../features/api/apiSlice'
+import { useGetUserByIdQuery } from '../../features/api/apiProductsSlice'
 
 const overview: React.FC = () => {
     const router = useRouter()
