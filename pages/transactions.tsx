@@ -17,37 +17,13 @@ import {
 import { nanoid } from '@reduxjs/toolkit'
 import { replace, selectProducts } from '../features/products/productsSlice'
 import { useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
 
 const Transactions = () => {
     const dispatch = useAppDispatch()
-    // const [products, setProducts] = useState<
-    //     | {
-    //           brand: string
-    //           description: string
-    //           discountPercentage: number
-    //           id: number
-    //           price: number
-    //           rating: number
-    //           stock: number
-    //           title: string
-    //       }[]
-    //     | undefined
-    // >()
+    const router = useRouter()
     const products = useSelector(selectProducts)
     const { data, isError, isSuccess } = useGetProductsQuery()
-    // console.log(useSelector(selectProducts))
-    // let filteredProducts:
-    //     | {
-    //           brand: string
-    //           description: string
-    //           discountPercentage: number
-    //           id: number
-    //           price: number
-    //           rating: number
-    //           stock: number
-    //           title: string
-    //       }[]
-    //     | undefined = data?.products
 
     const columns = [
         { Header: 'ID', accessor: 'id', Filter: NewFilter },
@@ -65,57 +41,48 @@ const Transactions = () => {
     ]
 
     useEffect(() => {
-        if (isSuccess) {
-            dispatch(replace(data.products))
+        if (localStorage.getItem('isLoggedIn') === 'loggedIn') {
+            if (isSuccess) {
+                dispatch(replace(data.products))
+            }
+        } else {
+            console.log(router)
+            router.replace('/')
         }
     }, [isSuccess])
 
+    const onClick = useCallback(() => {
+        localStorage.clear()
+        router.push('/')
+    }, [])
+
     return (
-        <div className="transactions">
-            <div className="header">
-                <Header />
+        <div className="me-4 ms-4 w-100">
+            <div className="fw-semibold fs-3">Transactions</div>
+            <div>
+                <CardGroupTwo />
             </div>
-            <div className="d-flex">
-                <div>
-                    <Sidebar />
-                </div>
-                <div className="me-4 ms-4 w-100">
-                    <div className="fw-semibold fs-3">Transactions</div>
-                    <div>
-                        <CardGroupTwo />
-                    </div>
 
-                    {/* {products ? (
-                        <Pagination length={products?.length} />
-                    ) : (
-                        <Pagination />
-                    )} */}
-
-                    {products.products.length ? (
-                        <NewTable
-                            receivedData={products.products.map((product) => {
-                                return Object.fromEntries(
-                                    Object.entries(product).slice(0, 8)
-                                )
-                            })}
-                            receivedColumns={columns}
-                            // generateKey={nanoid}
-                        />
-                    ) : isError ? (
-                        <div className="fs-2 d-flex justify-content-center">
-                            An Error Occurred
-                        </div>
-                    ) : (
-                        <div className="d-flex justify-content-center">
-                            <div className="spinner-border"></div>
-                        </div>
-                    )}
-                    {/* </div> */}
+            {products.products.length ? (
+                <NewTable
+                    receivedData={products.products.map((product) => {
+                        return Object.fromEntries(
+                            Object.entries(product).slice(0, 8)
+                        )
+                    })}
+                    receivedColumns={columns}
+                />
+            ) : isError ? (
+                <div className="fs-2 d-flex justify-content-center">
+                    An Error Occurred
                 </div>
-            </div>
+            ) : (
+                <div className="d-flex justify-content-center">
+                    <div className="spinner-border"></div>
+                </div>
+            )}
         </div>
     )
 }
-// }
 
 export default Transactions

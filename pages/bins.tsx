@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form'
 import { useAppDispatch } from '../app/hooks'
 import { useSelector } from 'react-redux'
 import { add, replace, selectBins } from '../features/bins/binsSlice'
+import { useRouter } from 'next/router'
 
 const Modal: React.FC = () => {
     const { data, isSuccess } = useGetBinsQuery()
@@ -29,15 +30,6 @@ const Modal: React.FC = () => {
     } = useForm()
 
     const dispatch = useAppDispatch()
-
-    // const addBins = (details: Object) => dispatch(add(details))
-
-    // const onChange = (event: any) => {
-    //     // console.log(event.currentTarget.id)
-    //     if (event.currentTarget.id === 'id') {
-    //         setExist(false)
-    //     }
-    // }
 
     const checkData = useCallback(
         (details: any) => {
@@ -141,9 +133,6 @@ const Modal: React.FC = () => {
                                                                     )}
                                                                     className="w-50"
                                                                     id={`${head}`}
-                                                                    // onChange={
-                                                                    //     onChange
-                                                                    // }
                                                                 />
                                                             ) : head ===
                                                               'description' ? (
@@ -231,59 +220,59 @@ const Modal: React.FC = () => {
 const Bins: React.FC = () => {
     const { data, isError, isSuccess } = useGetBinsQuery()
     const dispatch = useAppDispatch()
+    const router = useRouter()
     const bins = useSelector(selectBins)
     const [records, setRecords] = useState<Object[]>()
 
     useEffect(() => {
-        if (isSuccess) {
-            dispatch(replace(data))
+        if (localStorage.getItem('isLoggedIn') === 'loggedIn') {
+            if (isSuccess) {
+                dispatch(replace(data))
+            }
+        } else {
+            console.log(router)
+            router.replace('/')
         }
     }, [isSuccess])
 
     useEffect(() => {
-        // debugger
         setRecords(bins)
     }, [bins])
 
+    const onClick = useCallback(() => {
+        localStorage.clear()
+        router.push('/')
+    }, [])
+
     return (
         <>
-            <div className="">
-                <div className="header ">
-                    <Header />
-                </div>
-                <div className="d-flex">
+            <div className="me-4 ms-4 w-100">
+                <div className="fw-semibold fs-3 mb-5">Bins</div>
+                <Modal />
+                {records?.length ? (
                     <div>
-                        <Sidebar />
+                        <NewTable
+                            receivedData={records}
+                            receivedColumns={Object.keys(bins[0])
+                                .slice(0, 5)
+                                .map((key) => {
+                                    return {
+                                        Header: key.toUpperCase(),
+                                        accessor: key,
+                                        Filter: NewFilter,
+                                    }
+                                })}
+                        />
                     </div>
-                    <div className="me-4 ms-4 w-100">
-                        <div className="fw-semibold fs-3 mb-5">Bins</div>
-                        <Modal />
-                        {records?.length ? (
-                            <div>
-                                <NewTable
-                                    receivedData={records}
-                                    receivedColumns={Object.keys(bins[0])
-                                        .slice(0, 5)
-                                        .map((key) => {
-                                            return {
-                                                Header: key.toUpperCase(),
-                                                accessor: key,
-                                                Filter: NewFilter,
-                                            }
-                                        })}
-                                />
-                            </div>
-                        ) : isError ? (
-                            <div className="d-flex justify-content-center">
-                                <div className="fs-2">An Error Occurred</div>
-                            </div>
-                        ) : (
-                            <div className="d-flex justify-content-center">
-                                <div className="spinner-border"></div>
-                            </div>
-                        )}
+                ) : isError ? (
+                    <div className="d-flex justify-content-center">
+                        <div className="fs-2">An Error Occurred</div>
                     </div>
-                </div>
+                ) : (
+                    <div className="d-flex justify-content-center">
+                        <div className="spinner-border"></div>
+                    </div>
+                )}
             </div>
         </>
     )

@@ -1,87 +1,112 @@
 import { Footer, InputBox } from '@sachethpraveen/components'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import users from '../config/config'
 import validator from 'validator'
 import bcrypt from 'bcryptjs'
 import Link from 'next/link'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
+import { replaceId, selectUser } from '../features/user/userSlice'
+import { useRouter } from 'next/router'
 
 const salt = bcrypt.genSaltSync(10)
 
 const Home = () => {
-    const [userId, setUser] = useState(0)
-    const [password, setPass] = useState('')
+    const [userId, setUser] = useState<number>()
+    const [entered, setEntered] = useState(false)
     const [field, setField] = useState('')
     const [isUser, setIsUser] = useState(false)
-    const [error, setError] = useState(false)
+    const [userError, setUserError] = useState(false)
+    const [passError, setPassError] = useState(false)
     const [notFound, setNotFound] = useState(false)
     const [invalid, setInvalid] = useState(false)
-    let id = useRef(0).current
+    const router = useRouter()
 
-    const onClick = useCallback(() => {
-        setUser(0)
-        setIsUser(false)
-    }, [])
+    const onChange = useCallback(
+        (event: any) => {
+            if (event.currentTarget.id !== 'username') {
+                if (event.currentTarget.value.length < 8) {
+                    setInvalid(false)
+                    setEntered(false)
+                } else {
+                    setField(event.currentTarget.value)
+                    setPassError(false)
+                    setEntered(true)
+                }
+            }
+        },
+        [userId]
+    )
 
-    const onChange = useCallback((event: any) => {
-        setField(event.currentTarget.value)
-    }, [])
-
-    const keyPress = useCallback((event: any) => {
-        if (event.key === 'Enter') {
-            if (event.currentTarget.id === 'username') {
-                const userEntered = event.currentTarget.value
-                if (
-                    validator.isEmail(userEntered) ||
-                    validator.isMobilePhone(userEntered) ||
-                    userEntered.length >= 8
-                ) {
-                    const userFiltered = users.filter((user) => {
-                        return (
-                            user.email === userEntered ||
-                            user.phone === userEntered
-                        )
-                    })
-                    if (userFiltered.length === 1) {
-                        setUser(userFiltered[0].id)
-                        id = userFiltered[0].id
-                        setIsUser(true)
-                        setError(false)
-                        setNotFound(false)
+    const keyPress = useCallback(
+        (event: any) => {
+            if (event.key === 'Enter') {
+                if (event.currentTarget.id === 'username') {
+                    const userEntered = event.currentTarget.value
+                    if (
+                        validator.isEmail(userEntered) ||
+                        validator.isMobilePhone(userEntered) ||
+                        userEntered.length >= 8
+                    ) {
+                        const userFiltered = users.filter((user) => {
+                            return (
+                                user.email === userEntered ||
+                                user.phone === userEntered
+                            )
+                        })
+                        if (userFiltered.length === 1) {
+                            setUser(userFiltered[0].id)
+                            // replaceId(userFiltered[0].id)
+                            setIsUser(true)
+                            setUserError(false)
+                            setNotFound(false)
+                        } else {
+                            setNotFound(true)
+                            setUserError(false)
+                            setIsUser(false)
+                        }
                     } else {
-                        setNotFound(true)
-                        setError(false)
+                        setUserError(true)
+                        setNotFound(false)
+                        setIsUser(false)
                     }
                 } else {
-                    setError(true)
-                    setNotFound(false)
-                }
-            } else {
-                const passwordEntered = event.currentTarget.value
-                if (passwordEntered.length < 8) {
-                    setError(true)
-                    setInvalid(false)
-                    setPass('')
-                } else {
-                    setError(false)
-                    if (
-                        users.filter((user) => {
-                            return (
-                                bcrypt.compareSync(
-                                    passwordEntered,
-                                    user.password
-                                ) && user.id === id
-                            )
-                        }).length === 1
-                    ) {
-                        setPass(passwordEntered)
-                        setInvalid(false)
-                    } else {
-                        setPass('')
-                        setInvalid(true)
+                    if (event.currentTarget.value.length < 8) {
+                        setPassError(true)
                     }
                 }
             }
+        },
+        [userId]
+    )
+
+    const onClick = useCallback(
+        (event: any) => {
+            if (
+                users.filter((user) => {
+                    console.log(user)
+                    return (
+                        bcrypt.compareSync(field, user.password) &&
+                        user.id === userId
+                    )
+                }).length === 1
+            ) {
+                setInvalid(false)
+                localStorage.setItem('userId', userId ? userId.toString() : '')
+                localStorage.setItem('isLoggedIn', 'loggedIn')
+                router.push('/overview')
+            } else {
+                setInvalid(true)
+            }
+        },
+        [field]
+    )
+
+    useEffect(() => {
+        if (localStorage.getItem('isLoggedIn') === 'loggedIn') {
+            router.replace('/overview')
+        } else {
+            localStorage.setItem('isLoggedIn', 'loggedOut')
         }
     }, [])
 
@@ -98,23 +123,18 @@ const Home = () => {
                                 keyPress={keyPress}
                                 onChange={onChange}
                                 isUser={isUser}
-                                error={error}
+                                userError={userError}
+                                passError={passError}
                                 invalid={invalid}
                                 notFound={notFound}
-                                onClick={onClick}
                             />
-                            {userId != 0 && (
-                                <Link href={`/overview/${userId}`}>
-                                    <button
-                                        className={
-                                            userId && password
-                                                ? 'btn btn-dark'
-                                                : 'btn btn-dark disabled'
-                                        }
-                                    >
-                                        Login
-                                    </button>
-                                </Link>
+                            {entered && (
+                                <button
+                                    className="login btn btn-dark"
+                                    onClick={onClick}
+                                >
+                                    Login
+                                </button>
                             )}
                         </div>
                     </div>
