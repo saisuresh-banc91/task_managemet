@@ -3,24 +3,32 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import React, { useEffect } from 'react'
 import { BsPerson } from 'react-icons/bs'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { fetchUserById, selectUser } from '../../features/user/userSlice'
+import { replace, selectUser } from '../../features/user/userSlice'
 import { useRouter } from 'next/router'
-import { nanoid } from '@reduxjs/toolkit'
-import { useGetUserByIdQuery } from '../../features/api/apiProductsSlice'
+import { useLazyGetUserByIdQuery } from '../../features/api/apiProductsSlice'
 
 const overview: React.FC = () => {
     const router = useRouter()
     const userid = router.query.overviewid
-
     const dispatch = useAppDispatch()
-    const { user, status, error } = useAppSelector(selectUser)
-    const { data, isError, isSuccess } = useGetUserByIdQuery(userid!.toString())
+    const { user } = useAppSelector(selectUser)
+    const [trigger, { data, isError, isSuccess }, lastPromiseInfo] =
+        useLazyGetUserByIdQuery()
 
     useEffect(() => {
-        if (status === 'idle') {
-            dispatch(fetchUserById(userid!.toString()))
+        if (userid) {
+            localStorage.setItem('userId', userid!.toString())
         }
-    })
+
+        trigger(localStorage.getItem('userId')!, true)
+    }, [])
+
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(replace(data))
+        }
+    }, [isSuccess])
+
     return (
         <>
             <div className="d-flex flex-column vh-100">
@@ -40,8 +48,8 @@ const overview: React.FC = () => {
                                         <BsPerson />
                                     </div>
                                     <div className="ms-3 d-flex flex-column">
-                                        <p>{data.email}</p>
-                                        <p>{data.phone}</p>
+                                        <p>{user.email}</p>
+                                        <p>{user.phone}</p>
                                     </div>
                                 </div>
                                 <hr className="m-3" />
@@ -57,25 +65,25 @@ const overview: React.FC = () => {
                                         <div className="fw-semibold">
                                             Username
                                         </div>
-                                        <div>{data.username}</div>
+                                        <div>{user.username}</div>
                                     </div>
                                     <div className="m-3">
                                         <div className="fw-semibold">
                                             Company
                                         </div>
-                                        <div>{data.company.name}</div>
+                                        <div>{user.company.name}</div>
                                     </div>
                                     <div className="m-3">
                                         <div className="fw-semibold">
                                             Website
                                         </div>
-                                        <div>{data.domain}</div>
+                                        <div>{user.domain}</div>
                                     </div>
                                     <div className="m-3">
                                         <div className="fw-semibold">
                                             Registered Address
                                         </div>
-                                        <div>{data.address.address}</div>
+                                        <div>{user.address.address}</div>
                                     </div>
                                 </div>
                             </div>

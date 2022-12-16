@@ -29,7 +29,6 @@ const cards = () => {
                     <div>
                         <CardGroupTwo />
                     </div>
-                    <Pagination />
                     {isSuccess ? (
                         <NewTable
                             receivedData={data.map((product: Object) => {

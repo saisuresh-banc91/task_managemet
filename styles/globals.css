@@ -13,3 +13,24 @@
 .transactions {
     min-height: 100vh;
 }
+
+.dropdown-menu {
+    min-width: auto !important;
+}
+
+.dropdown button {
+    margin-right: 0.5rem;
+}
+
+.headerDrop a:active {
+    background-color: #7d57fd;
+}
+
+@media only screen and (max-width: 850px) {
+    .card div > .fs-6 {
+        font-size: 0.8rem !important;
+    }
+    .card div > .fs-1 {
+        font-size: 1.5rem !important ;
+    }
+} ;

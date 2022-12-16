@@ -1,15 +1,19 @@
 .loginBackground {
-  background-image: url("../config/Card.png");
-  background-size: cover;
-  background-color: black;
-  min-height: 100vh;
-  flex: 2;
+    background-image: url('../config/Card.png');
+    background-size: cover;
+    background-color: black;
+    min-height: 100vh;
+    flex: 2;
 }
 
 .loginInput {
-  /* background-color: aqua */
-  min-height: 100vh;
-  flex: 3;
+    /* background-color: aqua */
+    min-height: 100vh;
+    flex: 3;
+}
+
+.login {
+    background-color: #7d57fd !important;
 }
 
 /* .loginComponents {
