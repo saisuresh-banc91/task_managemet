@@ -1,77 +1,62 @@
-import axios from "axios";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { RootState } from "../../app/store";
+import axios from 'axios'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import type { RootState } from '../../app/store'
 
-const usersUrl = "https://jsonplaceholder.typicode.com/users";
+const usersUrl = 'https://jsonplaceholder.typicode.com/users'
 
 export type UserState = {
-  user: {
-    id: number;
-    username: string;
-    website: string;
-    name: string;
-    email: string;
-    address: { street: string; suite: string; city: string; zipcode: string };
-    phone: number;
-    company: { name: string; catchphrase: string; bs: string };
-  };
-  status: string;
-  error: boolean;
-};
+    user: {
+        domain: string
+        id: number
+        username: string
+        website: string
+        name: string
+        email: string
+        address: {
+            address: string
+            street: string
+            suite: string
+            city: string
+            zipcode: string
+        }
+        phone: number
+        company: { name: string; catchphrase: string; bs: string }
+    }
+    id: number
+}
 
 const initialState: UserState = {
-  user: {
+    user: {
+        domain: '',
+        id: 0,
+        username: '',
+        website: '',
+        name: '',
+        email: '',
+        address: { street: '', suite: '', city: '', zipcode: '', address: '' },
+        phone: 0,
+        company: { name: '', catchphrase: '', bs: '' },
+    },
     id: 0,
-    username: "",
-    website: "",
-    name: "",
-    email: "",
-    address: { street: "", suite: "", city: "", zipcode: "" },
-    phone: 0,
-    company: { name: "", catchphrase: "", bs: "" },
-  },
-  status: "idle",
-  error: false,
-};
-
-export const fetchUserById = createAsyncThunk(
-  "user/fetchUser",
-  async (userid: string) => {
-    try {
-      const response = await axios.get(usersUrl + "/" + userid);
-      delete response.data.address.geo;
-      return response.data;
-    } catch (error) {
-      if (error instanceof Error) {
-        return error.message;
-      }
-      return String(error);
-    }
-  }
-);
+}
 
 export const userSlice = createSlice({
-  name: "user",
-  initialState,
-  reducers: {},
-  extraReducers(builder) {
-    builder
-      .addCase(fetchUserById.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchUserById.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.user = action.payload;
-      })
-      .addCase(fetchUserById.rejected, (state) => {
-        state.status = "failed";
-        state.error = true;
-      });
-  },
-});
+    name: 'user',
+    initialState,
+    reducers: {
+        replace: (state, action) => {
+            state.user = action.payload
+        },
+        replaceId: (state, action) => {
+            state.id = action.payload
+        },
+    },
+})
 
 export const selectUser = (state: RootState) => {
-  return state.user;
-};
+    return state.user
+}
 
-export default userSlice.reducer;
+export const { replace, replaceId } = userSlice.actions
+
+export default userSlice.reducer
