@@ -1,26 +1,27 @@
 import { CardGroup, Header, Sidebar } from '@sachethpraveen/components'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { BsPerson } from 'react-icons/bs'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { replace, selectUser } from '../../features/user/userSlice'
 import { useRouter } from 'next/router'
 import { useLazyGetUserByIdQuery } from '../../features/api/apiProductsSlice'
 
-const overview: React.FC = () => {
+const Overview: React.FC = () => {
     const router = useRouter()
-    const userid = router.query.overviewid
+    // const userid = router.query.overviewid
     const dispatch = useAppDispatch()
     const { user } = useAppSelector(selectUser)
     const [trigger, { data, isError, isSuccess }, lastPromiseInfo] =
         useLazyGetUserByIdQuery()
 
     useEffect(() => {
-        if (userid) {
-            localStorage.setItem('userId', userid!.toString())
+        if (localStorage.getItem('isLoggedIn') === 'loggedIn') {
+            trigger(localStorage.getItem('userId')!, true)
+        } else {
+            console.log(router)
+            router.replace('/')
         }
-
-        trigger(localStorage.getItem('userId')!, true)
     }, [])
 
     useEffect(() => {
@@ -29,11 +30,16 @@ const overview: React.FC = () => {
         }
     }, [isSuccess])
 
+    const onClick = useCallback(() => {
+        localStorage.clear()
+        router.push('/')
+    }, [])
+
     return (
         <>
             <div className="d-flex flex-column vh-100">
                 <div className="header">
-                    <Header />
+                    <Header name={user.username} onClick={onClick} />
                 </div>
 
                 <div className="d-flex content">
@@ -112,4 +118,4 @@ const overview: React.FC = () => {
     )
 }
 
-export default overview
+export default Overview
