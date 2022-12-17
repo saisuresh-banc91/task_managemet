@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { replaceId, selectUser } from '../features/user/userSlice'
 import { useRouter } from 'next/router'
+import { login } from '../features/log/logSlice'
 
 const salt = bcrypt.genSaltSync(10)
 
@@ -21,6 +22,7 @@ const Home = () => {
     const [notFound, setNotFound] = useState(false)
     const [invalid, setInvalid] = useState(false)
     const router = useRouter()
+    const dispatch = useAppDispatch()
 
     const onChange = useCallback(
         (event: any) => {
@@ -94,6 +96,7 @@ const Home = () => {
                 setInvalid(false)
                 localStorage.setItem('userId', userId ? userId.toString() : '')
                 localStorage.setItem('isLoggedIn', 'loggedIn')
+                dispatch(login())
                 router.push('/overview')
             } else {
                 setInvalid(true)

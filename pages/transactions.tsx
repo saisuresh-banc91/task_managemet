@@ -14,7 +14,6 @@ import {
     useGetProductsQuery,
     useAddProductMutation,
 } from '../features/api/apiProductsSlice'
-import { nanoid } from '@reduxjs/toolkit'
 import { replace, selectProducts } from '../features/products/productsSlice'
 import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'

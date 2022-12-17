@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import userReducer from '../features/user/userSlice'
 import productsReducer from '../features/products/productsSlice'
 import binsReducer from '../features/bins/binsSlice'
+import logReducer from '../features/log/logSlice'
 import { apiProductsSlice } from '../features/api/apiProductsSlice'
 import { apiBinsSlice } from '../features/api/apiBinsSlice'
 
@@ -10,6 +11,7 @@ export const store = configureStore({
         user: userReducer,
         products: productsReducer,
         bins: binsReducer,
+        log: logReducer,
         [apiProductsSlice.reducerPath]: apiProductsSlice.reducer,
         [apiBinsSlice.reducerPath]: apiBinsSlice.reducer,
     },
